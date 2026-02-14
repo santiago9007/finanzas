@@ -1,0 +1,2134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanzaPro | Sistema de Gestión Financiera</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#0a0f1a',
+                        surface: '#111827',
+                        card: '#1a2235',
+                        border: '#2a3548',
+                        accent: '#10b981',
+                        accentDark: '#059669',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        muted: '#6b7280',
+                        fg: '#f1f5f9'
+                    },
+                    fontFamily: {
+                        display: ['Space Grotesk', 'sans-serif'],
+                        body: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #0a0f1a;
+            color: #f1f5f9;
+        }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #2a3548; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3a4558; }
+        
+        /* Background pattern */
+        .bg-pattern {
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+        }
+        
+        /* Grid pattern */
+        .grid-pattern {
+            background-image: linear-gradient(rgba(42, 53, 72, 0.3) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(42, 53, 72, 0.3) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-slide-in { animation: slideIn 0.4s ease-out forwards; }
+        .animate-scale-in { animation: scaleIn 0.3s ease-out forwards; }
+        .animate-pulse-slow { animation: pulse 2s ease-in-out infinite; }
+        
+        .stagger-1 { animation-delay: 0.1s; opacity: 0; }
+        .stagger-2 { animation-delay: 0.2s; opacity: 0; }
+        .stagger-3 { animation-delay: 0.3s; opacity: 0; }
+        .stagger-4 { animation-delay: 0.4s; opacity: 0; }
+        .stagger-5 { animation-delay: 0.5s; opacity: 0; }
+        
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Focus styles */
+        .focus-ring:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #0a0f1a, 0 0 0 4px #10b981;
+        }
+        
+        /* Glass effect */
+        .glass {
+            background: rgba(26, 34, 53, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(42, 53, 72, 0.5);
+        }
+        
+        /* Chart bars animation */
+        .chart-bar {
+            transition: height 0.5s ease-out, background-color 0.2s ease;
+        }
+        
+        /* Modal overlay */
+        .modal-overlay {
+            background: rgba(10, 15, 26, 0.85);
+            backdrop-filter: blur(4px);
+        }
+        
+        /* Number counter animation */
+        .counter-value {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        /* Table hover */
+        .table-row-hover:hover {
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        /* Progress bar */
+        .progress-bar {
+            transition: width 0.8s ease-out;
+        }
+        
+        /* Button press effect */
+        .btn-press:active {
+            transform: scale(0.97);
+        }
+        
+        /* Sidebar link */
+        .nav-link {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 0;
+            background: #10b981;
+            border-radius: 0 2px 2px 0;
+            transition: height 0.2s ease;
+        }
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            height: 60%;
+        }
+        .nav-link.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        /* Input styles */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+        
+        /* Select custom */
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-pattern">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <!-- Logo -->
+            <div class="text-center mb-8 animate-fade-in">
+                <div class="inline-flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-accentDark flex items-center justify-center">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-3xl font-display font-bold text-fg">FinanzaPro</h1>
+                </div>
+                <p class="text-muted">Sistema de Gestión Financiera Multiperfil</p>
+            </div>
+            
+            <!-- Login Card -->
+            <div class="glass rounded-2xl p-8 animate-fade-in stagger-1">
+                <form id="loginForm" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-muted mb-2">Usuario</label>
+                        <input type="text" id="loginUsername" required
+                            class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg placeholder-muted/50 focus-ring transition-colors focus:border-accent"
+                            placeholder="Ingresa tu usuario">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-muted mb-2">Contraseña</label>
+                        <input type="password" id="loginPassword" required
+                            class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg placeholder-muted/50 focus-ring transition-colors focus:border-accent"
+                            placeholder="Ingresa tu contraseña">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-muted mb-2">Rol</label>
+                        <select id="loginRole" 
+                            class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg focus-ring transition-colors focus:border-accent cursor-pointer">
+                            <option value="user">Usuario</option>
+                            <option value="admin">Administrador Financiero</option>
+                        </select>
+                    </div>
+                    <button type="submit" 
+                        class="w-full py-3 px-6 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:opacity-90 focus-ring btn-press transition-all">
+                        Iniciar Sesion
+                    </button>
+                </form>
+                
+                <div class="mt-6 pt-6 border-t border-border">
+                    <p class="text-sm text-muted text-center mb-3">Usuarios de prueba:</p>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <button onclick="quickLogin('user')" class="p-3 bg-surface rounded-lg hover:bg-card transition-colors">
+                            <span class="block font-medium text-fg">usuario1</span>
+                            <span class="text-muted">pass1 (Usuario)</span>
+                        </button>
+                        <button onclick="quickLogin('admin')" class="p-3 bg-surface rounded-lg hover:bg-card transition-colors">
+                            <span class="block font-medium text-fg">admin</span>
+                            <span class="text-muted">admin123 (Admin)</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main App -->
+    <div id="mainApp" class="hidden min-h-screen flex">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 bg-surface border-r border-border flex flex-col fixed h-full z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <!-- Logo -->
+            <div class="p-6 border-b border-border">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-accentDark flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-display font-bold text-fg">FinanzaPro</span>
+                </div>
+            </div>
+            
+            <!-- User Info -->
+            <div class="p-4 border-b border-border">
+                <div class="flex items-center gap-3">
+                    <div id="userAvatar" class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold">
+                        U
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="userName" class="font-medium text-fg truncate">Usuario</p>
+                        <p id="userRole" class="text-xs text-muted">Rol</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 p-4 space-y-1">
+                <button onclick="navigateTo('dashboard')" class="nav-link active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left hover:bg-card/50" data-nav="dashboard">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                    </svg>
+                    <span>Dashboard</span>
+                </button>
+                
+                <button onclick="navigateTo('movements')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left hover:bg-card/50" data-nav="movements">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
+                    <span>Movimientos</span>
+                </button>
+                
+                <button onclick="navigateTo('categories')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left hover:bg-card/50" data-nav="categories">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                    <span>Categorias</span>
+                </button>
+                
+                <button onclick="navigateTo('budget')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left hover:bg-card/50" data-nav="budget">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                    <span>Presupuesto</span>
+                </button>
+                
+                <button onclick="navigateTo('reports')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left hover:bg-card/50" data-nav="reports">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    <span>Reportes</span>
+                </button>
+                
+                <!-- Admin only -->
+                <div id="adminNav" class="hidden pt-4 border-t border-border mt-4">
+                    <p class="px-4 text-xs font-semibold text-muted uppercase tracking-wider mb-2">Administracion</p>
+                    <button onclick="navigateTo('users')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left hover:bg-card/50" data-nav="users">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <span>Usuarios</span>
+                    </button>
+                    
+                    <button onclick="navigateTo('globalReports')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left hover:bg-card/50" data-nav="globalReports">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>Reportes Globales</span>
+                    </button>
+                </div>
+            </nav>
+            
+            <!-- Logout -->
+            <div class="p-4 border-t border-border">
+                <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-danger hover:bg-danger/10 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    <span>Cerrar Sesion</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Mobile Header -->
+        <div class="lg:hidden fixed top-0 left-0 right-0 h-16 bg-surface border-b border-border flex items-center justify-between px-4 z-30">
+            <button onclick="toggleSidebar()" class="p-2 hover:bg-card rounded-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+            <span class="font-display font-bold">FinanzaPro</span>
+            <div id="userAvatarMobile" class="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent text-sm font-semibold">U</div>
+        </div>
+        
+        <!-- Overlay -->
+        <div id="sidebarOverlay" onclick="toggleSidebar()" class="lg:hidden fixed inset-0 bg-black/50 z-30 hidden"></div>
+        
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-64 pt-16 lg:pt-0">
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="view p-6 lg:p-8">
+                <div class="max-w-7xl mx-auto">
+                    <!-- Header -->
+                    <div class="mb-8 animate-fade-in">
+                        <h1 class="text-3xl font-display font-bold text-fg mb-2">Dashboard</h1>
+                        <p class="text-muted">Resumen de tu situacion financiera</p>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div class="glass rounded-2xl p-6 animate-fade-in stagger-1">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-muted text-sm">Balance Total</span>
+                                <div class="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="statBalance" class="text-3xl font-display font-bold text-fg counter-value">$0.00</p>
+                            <p id="balanceChange" class="text-sm text-accent mt-2">+0% este mes</p>
+                        </div>
+                        
+                        <div class="glass rounded-2xl p-6 animate-fade-in stagger-2">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-muted text-sm">Ingresos</span>
+                                <div class="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="statIncome" class="text-3xl font-display font-bold text-accent counter-value">$0.00</p>
+                            <p class="text-sm text-muted mt-2">Este mes</p>
+                        </div>
+                        
+                        <div class="glass rounded-2xl p-6 animate-fade-in stagger-3">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-muted text-sm">Gastos</span>
+                                <div class="w-10 h-10 rounded-xl bg-danger/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="statExpenses" class="text-3xl font-display font-bold text-danger counter-value">$0.00</p>
+                            <p class="text-sm text-muted mt-2">Este mes</p>
+                        </div>
+                        
+                        <div class="glass rounded-2xl p-6 animate-fade-in stagger-4">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-muted text-sm">Presupuesto</span>
+                                <div class="w-10 h-10 rounded-xl bg-warning/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="statBudget" class="text-3xl font-display font-bold text-warning counter-value">$0.00</p>
+                            <div class="mt-2">
+                                <div class="h-2 bg-surface rounded-full overflow-hidden">
+                                    <div id="budgetProgress" class="h-full bg-gradient-to-r from-accent to-warning progress-bar" style="width: 0%"></div>
+                                </div>
+                                <p id="budgetPercent" class="text-sm text-muted mt-1">0% utilizado</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts Row -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <!-- Monthly Chart -->
+                        <div class="glass rounded-2xl p-6 animate-fade-in stagger-5">
+                            <h3 class="text-lg font-display font-semibold text-fg mb-6">Movimientos del Mes</h3>
+                            <div id="monthlyChart" class="h-48 flex items-end justify-between gap-2"></div>
+                            <div class="flex justify-center gap-6 mt-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-accent"></div>
+                                    <span class="text-sm text-muted">Ingresos</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-danger"></div>
+                                    <span class="text-sm text-muted">Gastos</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Category Distribution -->
+                        <div class="glass rounded-2xl p-6 animate-fade-in stagger-5">
+                            <h3 class="text-lg font-display font-semibold text-fg mb-6">Gastos por Categoria</h3>
+                            <div id="categoryChart" class="space-y-4"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Transactions -->
+                    <div class="glass rounded-2xl p-6 animate-fade-in">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-display font-semibold text-fg">Movimientos Recientes</h3>
+                            <button onclick="navigateTo('movements')" class="text-accent hover:text-accentDark transition-colors text-sm font-medium">
+                                Ver todos
+                            </button>
+                        </div>
+                        <div id="recentTransactions" class="space-y-3">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Movements View -->
+            <div id="view-movements" class="view hidden p-6 lg:p-8">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                        <div>
+                            <h1 class="text-3xl font-display font-bold text-fg mb-2">Movimientos</h1>
+                            <p class="text-muted">Administra tus ingresos y gastos</p>
+                        </div>
+                        <button onclick="openMovementModal()" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:opacity-90 focus-ring btn-press transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Nuevo Movimiento
+                        </button>
+                    </div>
+                    
+                    <!-- Filters -->
+                    <div class="glass rounded-2xl p-4 mb-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-xs text-muted mb-1">Tipo</label>
+                                <select id="filterType" onchange="filterMovements()" class="w-full px-3 py-2 bg-surface border border-border rounded-lg text-fg focus-ring text-sm">
+                                    <option value="all">Todos</option>
+                                    <option value="income">Ingresos</option>
+                                    <option value="expense">Gastos</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-muted mb-1">Categoria</label>
+                                <input type="text" id="filterCategory" onchange="filterMovements()" class="w-full px-3 py-2 bg-surface border border-border rounded-lg text-fg focus-ring text-sm" placeholder="Filtrar por categoría...">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-muted mb-1">Desde</label>
+                                <input type="date" id="filterDateFrom" onchange="filterMovements()" class="w-full px-3 py-2 bg-surface border border-border rounded-lg text-fg focus-ring text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-muted mb-1">Hasta</label>
+                                <input type="date" id="filterDateTo" onchange="filterMovements()" class="w-full px-3 py-2 bg-surface border border-border rounded-lg text-fg focus-ring text-sm">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Movements Table -->
+                    <div class="glass rounded-2xl overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-border">
+                                        <th class="text-left p-4 text-sm font-semibold text-muted">Fecha</th>
+                                        <th class="text-left p-4 text-sm font-semibold text-muted">Descripcion</th>
+                                        <th class="text-left p-4 text-sm font-semibold text-muted">Categoria</th>
+                                        <th class="text-left p-4 text-sm font-semibold text-muted">Tipo</th>
+                                        <th class="text-right p-4 text-sm font-semibold text-muted">Monto</th>
+                                        <th class="text-center p-4 text-sm font-semibold text-muted">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="movementsTable">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="noMovements" class="hidden p-12 text-center">
+                            <svg class="w-16 h-16 text-muted/30 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            <p class="text-muted">No hay movimientos registrados</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Categories View -->
+            <div id="view-categories" class="view hidden p-6 lg:p-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                        <div>
+                            <h1 class="text-3xl font-display font-bold text-fg mb-2">Categorias</h1>
+                            <p class="text-muted">Organiza tus movimientos con categorias personalizadas</p>
+                        </div>
+                        <button onclick="openCategoryModal()" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:opacity-90 focus-ring btn-press transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Nueva Categoria
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="categoriesGrid">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Budget View -->
+            <div id="view-budget" class="view hidden p-6 lg:p-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-display font-bold text-fg mb-2">Presupuesto Mensual</h1>
+                        <p class="text-muted">Define limites de gasto por categoria</p>
+                    </div>
+                    
+                    <!-- Set Budget -->
+                    <div class="glass rounded-2xl p-6 mb-6">
+                        <h3 class="text-lg font-display font-semibold text-fg mb-4">Configurar Presupuesto</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm text-muted mb-2">Presupuesto Total Mensual</label>
+                                <input type="number" id="totalBudget" min="0" step="0.01" placeholder="0.00"
+                                    class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg focus-ring">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-muted mb-2">Mes</label>
+                                <input type="month" id="budgetMonth"
+                                    class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg focus-ring">
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="saveBudget()" class="w-full py-3 px-6 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:opacity-90 focus-ring btn-press">
+                                    Guardar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Budget Status -->
+                    <div class="glass rounded-2xl p-6">
+                        <h3 class="text-lg font-display font-semibold text-fg mb-6">Estado del Presupuesto</h3>
+                        <div id="budgetStatus" class="space-y-4">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reports View -->
+            <div id="view-reports" class="view hidden p-6 lg:p-8">
+                <div class="max-w-6xl mx-auto">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-display font-bold text-fg mb-2">Reportes</h1>
+                        <p class="text-muted">Analisis detallado de tus finanzas</p>
+                    </div>
+                    
+                    <!-- Report Period Selector -->
+                    <div class="glass rounded-2xl p-4 mb-6">
+                        <div class="flex flex-wrap gap-4 items-center">
+                            <span class="text-sm text-muted">Periodo:</span>
+                            <div class="flex gap-2">
+                                <button onclick="setReportPeriod('week')" class="report-period-btn px-4 py-2 rounded-lg bg-surface text-muted hover:text-fg transition-colors" data-period="week">Semana</button>
+                                <button onclick="setReportPeriod('month')" class="report-period-btn active px-4 py-2 rounded-lg bg-accent text-white" data-period="month">Mes</button>
+                                <button onclick="setReportPeriod('year')" class="report-period-btn px-4 py-2 rounded-lg bg-surface text-muted hover:text-fg transition-colors" data-period="year">Año</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Summary Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                        <div class="glass rounded-2xl p-6 text-center">
+                            <p class="text-muted text-sm mb-2">Total Ingresos</p>
+                            <p id="reportIncome" class="text-2xl font-display font-bold text-accent">$0.00</p>
+                        </div>
+                        <div class="glass rounded-2xl p-6 text-center">
+                            <p class="text-muted text-sm mb-2">Total Gastos</p>
+                            <p id="reportExpenses" class="text-2xl font-display font-bold text-danger">$0.00</p>
+                        </div>
+                        <div class="glass rounded-2xl p-6 text-center">
+                            <p class="text-muted text-sm mb-2">Balance Neto</p>
+                            <p id="reportBalance" class="text-2xl font-display font-bold text-fg">$0.00</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Detailed Report -->
+                    <div class="glass rounded-2xl p-6">
+                        <h3 class="text-lg font-display font-semibold text-fg mb-6">Desglose por Categoria</h3>
+                        <div id="reportBreakdown" class="space-y-4">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin: Users View -->
+            <div id="view-users" class="view hidden p-6 lg:p-8">
+                <div class="max-w-6xl mx-auto">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-display font-bold text-fg mb-2">Gestion de Usuarios</h1>
+                        <p class="text-muted">Visualiza y monitorea todos los usuarios del sistema</p>
+                    </div>
+                    
+                    <div class="glass rounded-2xl overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-border">
+                                        <th class="text-left p-4 text-sm font-semibold text-muted">Usuario</th>
+                                        <th class="text-left p-4 text-sm font-semibold text-muted">Rol</th>
+                                        <th class="text-right p-4 text-sm font-semibold text-muted">Balance</th>
+                                        <th class="text-right p-4 text-sm font-semibold text-muted">Movimientos</th>
+                                        <th class="text-center p-4 text-sm font-semibold text-muted">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTable">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin: Global Reports View -->
+            <div id="view-globalReports" class="view hidden p-6 lg:p-8">
+                <div class="max-w-6xl mx-auto">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-display font-bold text-fg mb-2">Reportes Globales</h1>
+                        <p class="text-muted">Estadisticas consolidadas de todos los usuarios</p>
+                    </div>
+                    
+                    <!-- Global Stats -->
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
+                        <div class="glass rounded-2xl p-6">
+                            <p class="text-muted text-sm mb-2">Usuarios Activos</p>
+                            <p id="globalUsers" class="text-2xl font-display font-bold text-fg">0</p>
+                        </div>
+                        <div class="glass rounded-2xl p-6">
+                            <p class="text-muted text-sm mb-2">Total Transacciones</p>
+                            <p id="globalTransactions" class="text-2xl font-display font-bold text-fg">0</p>
+                        </div>
+                        <div class="glass rounded-2xl p-6">
+                            <p class="text-muted text-sm mb-2">Ingresos Totales</p>
+                            <p id="globalIncome" class="text-2xl font-display font-bold text-accent">$0</p>
+                        </div>
+                        <div class="glass rounded-2xl p-6">
+                            <p class="text-muted text-sm mb-2">Gastos Totales</p>
+                            <p id="globalExpenses" class="text-2xl font-display font-bold text-danger">$0</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Overbudget Users -->
+                    <div class="glass rounded-2xl p-6 mb-6">
+                        <h3 class="text-lg font-display font-semibold text-fg mb-4">Usuarios con Sobrepresupuesto</h3>
+                        <div id="overbudgetUsers" class="space-y-3">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                    
+                    <!-- Top Categories -->
+                    <div class="glass rounded-2xl p-6">
+                        <h3 class="text-lg font-display font-semibold text-fg mb-4">Categorias con Mayor Gasto</h3>
+                        <div id="topCategories" class="space-y-3">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Movement Modal -->
+    <div id="movementModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeMovementModal()"></div>
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            <div class="glass rounded-2xl w-full max-w-md p-6 animate-scale-in">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 id="movementModalTitle" class="text-xl font-display font-semibold text-fg">Nuevo Movimiento</h3>
+                    <button onclick="closeMovementModal()" class="p-2 hover:bg-card rounded-lg transition-colors">
+                        <svg class="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <form id="movementForm" class="space-y-4">
+                    <input type="hidden" id="movementId">
+                    <div>
+                        <label class="block text-sm text-muted mb-2">Tipo</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" onclick="setMovementType('income')" id="btnIncome" class="py-3 rounded-xl border border-border bg-surface text-muted transition-all hover:border-accent">
+                                Ingreso
+                            </button>
+                            <button type="button" onclick="setMovementType('expense')" id="btnExpense" class="py-3 rounded-xl border border-border bg-surface text-muted transition-all hover:border-danger">
+                                Gasto
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-muted mb-2">Descripcion</label>
+                        <input type="text" id="movementDescription" required
+                            class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg placeholder-muted/50 focus-ring"
+                            placeholder="Ej: Salario mensual">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-muted mb-2">Monto</label>
+                        <input type="number" id="movementAmount" min="0.01" step="0.01" required
+                            class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg placeholder-muted/50 focus-ring"
+                            placeholder="0.00">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-muted mb-2">Categoria</label>
+                        <input type="text" id="movementCategory" required class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg placeholder-muted/50 focus-ring" placeholder="Ej: Salud, Vivienda, Ahorro...">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-muted mb-2">Fecha</label>
+                        <input type="date" id="movementDate" required
+                            class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg focus-ring">
+                    </div>
+                    <div class="flex gap-3 pt-4">
+                        <button type="button" onclick="closeMovementModal()" class="flex-1 py-3 px-6 bg-surface border border-border rounded-xl text-fg hover:bg-card transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="flex-1 py-3 px-6 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:opacity-90 btn-press">
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Category Modal -->
+    <div id="categoryModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeCategoryModal()"></div>
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            <div class="glass rounded-2xl w-full max-w-md p-6 animate-scale-in">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 id="categoryModalTitle" class="text-xl font-display font-semibold text-fg">Nueva Categoria</h3>
+                    <button onclick="closeCategoryModal()" class="p-2 hover:bg-card rounded-lg transition-colors">
+                        <svg class="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <form id="categoryForm" class="space-y-4">
+                    <input type="hidden" id="categoryId">
+                    <div>
+                        <label class="block text-sm text-muted mb-2">Nombre</label>
+                        <input type="text" id="categoryName" required
+                            class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg placeholder-muted/50 focus-ring"
+                            placeholder="Ej: Alimentacion">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-muted mb-2">Tipo</label>
+                        <select id="categoryType" required class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg focus-ring">
+                            <option value="expense">Gasto</option>
+                            <option value="income">Ingreso</option>
+                            <option value="both">Ambos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-muted mb-2">Color</label>
+                        <div class="flex gap-2 flex-wrap">
+                            <button type="button" onclick="selectColor('#10b981')" data-color="#10b981" class="color-btn w-8 h-8 rounded-full bg-accent border-2 border-transparent hover:scale-110 transition-transform"></button>
+                            <button type="button" onclick="selectColor('#ef4444')" data-color="#ef4444" class="color-btn w-8 h-8 rounded-full bg-danger border-2 border-transparent hover:scale-110 transition-transform"></button>
+                            <button type="button" onclick="selectColor('#f59e0b')" data-color="#f59e0b" class="color-btn w-8 h-8 rounded-full bg-warning border-2 border-transparent hover:scale-110 transition-transform"></button>
+                            <button type="button" onclick="selectColor('#3b82f6')" data-color="#3b82f6" class="color-btn w-8 h-8 rounded-full bg-blue-500 border-2 border-transparent hover:scale-110 transition-transform"></button>
+                            <button type="button" onclick="selectColor('#8b5cf6')" data-color="#8b5cf6" class="color-btn w-8 h-8 rounded-full bg-violet-500 border-2 border-transparent hover:scale-110 transition-transform"></button>
+                            <button type="button" onclick="selectColor('#ec4899')" data-color="#ec4899" class="color-btn w-8 h-8 rounded-full bg-pink-500 border-2 border-transparent hover:scale-110 transition-transform"></button>
+                            <button type="button" onclick="selectColor('#06b6d4')" data-color="#06b6d4" class="color-btn w-8 h-8 rounded-full bg-cyan-500 border-2 border-transparent hover:scale-110 transition-transform"></button>
+                        </div>
+                        <input type="hidden" id="categoryColor" value="#10b981">
+                    </div>
+                    <div class="flex gap-3 pt-4">
+                        <button type="button" onclick="closeCategoryModal()" class="flex-1 py-3 px-6 bg-surface border border-border rounded-xl text-fg hover:bg-card transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="flex-1 py-3 px-6 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:opacity-90 btn-press">
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 z-50 hidden">
+        <div class="glass rounded-xl px-5 py-4 flex items-center gap-3 animate-slide-in">
+            <div id="toastIcon" class="w-6 h-6 rounded-full bg-accent flex items-center justify-center">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+            <p id="toastMessage" class="text-fg font-medium"></p>
+        </div>
+    </div>
+
+    <script>
+        // ================================
+        // DATA LAYER - localStorage Management
+        // ================================
+        
+        // Initialize default data structure
+        const DB_KEYS = {
+            USERS: 'finanzapro_users',
+            MOVEMENTS: 'finanzapro_movements',
+            CATEGORIES: 'finanzapro_categories',
+            BUDGETS: 'finanzapro_budgets',
+            CURRENT_USER: 'finanzapro_current_user'
+        };
+        
+        // Initialize database with default data
+        function initializeDatabase() {
+            // Default users
+            if (!localStorage.getItem(DB_KEYS.USERS)) {
+                const defaultUsers = [
+                    { id: 'u1', username: 'usuario1', password: 'pass1', role: 'user', name: 'Juan Perez' },
+                    { id: 'u2', username: 'usuario2', password: 'pass2', role: 'user', name: 'Maria Garcia' },
+                    { id: 'u3', username: 'usuario3', password: 'pass3', role: 'user', name: 'Carlos Lopez' },
+                    { id: 'a1', username: 'admin', password: 'admin123', role: 'admin', name: 'Administrador' }
+                ];
+                localStorage.setItem(DB_KEYS.USERS, JSON.stringify(defaultUsers));
+            }
+            
+            // Default categories
+            if (!localStorage.getItem(DB_KEYS.CATEGORIES)) {
+                const users = [
+                    { id: 'u1', name: 'Juan Pérez', email: 'juan@example.com', role: 'user' },
+                    { id: 'u2', name: 'María García', email: 'maria@example.com', role: 'user' },
+                    { id: 'u3', name: 'Carlos López', email: 'carlos@example.com', role: 'user' }
+                ];
+                
+                const defaultCategories = [];
+                
+                // Crear categorías para cada usuario
+                users.forEach(user => {
+                    defaultCategories.push(
+                        { id: 'c1-' + user.id, name: 'Salario', type: 'income', color: '#10b981', userId: user.id },
+                        { id: 'c2-' + user.id, name: 'Freelance', type: 'income', color: '#3b82f6', userId: user.id },
+                        { id: 'c3-' + user.id, name: 'Alimentacion', type: 'expense', color: '#f59e0b', userId: user.id },
+                        { id: 'c4-' + user.id, name: 'Transporte', type: 'expense', color: '#ef4444', userId: user.id },
+                        { id: 'c5-' + user.id, name: 'Entretenimiento', type: 'expense', color: '#8b5cf6', userId: user.id },
+                        { id: 'c6-' + user.id, name: 'Servicios', type: 'expense', color: '#06b6d4', userId: user.id },
+                        { id: 'c11-' + user.id, name: 'Salud', type: 'expense', color: '#ef4444', userId: user.id },
+                        { id: 'c12-' + user.id, name: 'Salud', type: 'income', color: '#10b981', userId: user.id },
+                        { id: 'c13-' + user.id, name: 'Vivienda', type: 'expense', color: '#f59e0b', userId: user.id },
+                        { id: 'c14-' + user.id, name: 'Vivienda', type: 'income', color: '#06b6d4', userId: user.id },
+                        { id: 'c15-' + user.id, name: 'Ahorro', type: 'expense', color: '#8b5cf6', userId: user.id },
+                        { id: 'c16-' + user.id, name: 'Ahorro', type: 'income', color: '#3b82f6', userId: user.id }
+                    );
+                });
+                
+                localStorage.setItem(DB_KEYS.CATEGORIES, JSON.stringify(defaultCategories));
+            }
+            
+            // Sample movements
+            if (!localStorage.getItem(DB_KEYS.MOVEMENTS)) {
+                const now = new Date();
+                const currentMonth = now.getMonth();
+                const currentYear = now.getFullYear();
+                
+                const sampleMovements = [
+                    // User 1 movements
+                    { id: 'm1', userId: 'u1', type: 'income', description: 'Salario Enero', amount: 3500, categoryId: 'c1', date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01` },
+                    { id: 'm2', userId: 'u1', type: 'income', description: 'Proyecto Freelance', amount: 800, categoryId: 'c2', date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-05` },
+                    { id: 'm3', userId: 'u1', type: 'expense', description: 'Supermercado', amount: 250, categoryId: 'c3', date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-03` },
+                    { id: 'm4', userId: 'u1', type: 'expense', description: 'Gasolina', amount: 80, categoryId: 'c4', date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-07` },
+                    { id: 'm5', userId: 'u1', type: 'expense', description: 'Cine y cena', amount: 65, categoryId: 'c5', date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-10` },
+                    { id: 'm6', userId: 'u1', type: 'expense', description: 'Electricidad', amount: 120, categoryId: 'c6', date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-12` },
+                    { id: 'm7', userId: 'u1', type: 'expense', description: 'Internet', amount: 45, categoryId: 'c6', date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-15` },
+                    // User 2 movements
+                    { id: 'm8', userId: 'u2', type: 'income', description: 'Salario', amount: 2800, categoryId: 'c7', date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01` },
+                    { id: 'm9', userId: 'u2', type: 'expense', description: 'Ropa', amount: 180, categoryId: 'c8', date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-08` },
+                    // User 3 movements
+                    { id: 'm10', userId: 'u3', type: 'income', description: 'Pago cliente', amount: 1500, categoryId: 'c9', date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-02` },
+                    { id: 'm11', userId: 'u3', type: 'expense', description: 'Material oficina', amount: 90, categoryId: 'c10', date: `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-09` }
+                ];
+                localStorage.setItem(DB_KEYS.MOVEMENTS, JSON.stringify(sampleMovements));
+            }
+            
+            // Default budgets
+            if (!localStorage.getItem(DB_KEYS.BUDGETS)) {
+                const now = new Date();
+                const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+                const defaultBudgets = [
+                    { id: 'b1', userId: 'u1', month: currentMonth, totalBudget: 3000 },
+                    { id: 'b2', userId: 'u2', month: currentMonth, totalBudget: 2000 },
+                    { id: 'b3', userId: 'u3', month: currentMonth, totalBudget: 1200 }
+                ];
+                localStorage.setItem(DB_KEYS.BUDGETS, JSON.stringify(defaultBudgets));
+            }
+        }
+        
+        // Data access functions
+        function getUsers() {
+            return JSON.parse(localStorage.getItem(DB_KEYS.USERS) || '[]');
+        }
+        
+        function getMovements(userId = null) {
+            const movements = JSON.parse(localStorage.getItem(DB_KEYS.MOVEMENTS) || '[]');
+            return userId ? movements.filter(m => m.userId === userId) : movements;
+        }
+        
+        function getCategories(userId = null) {
+            const categories = JSON.parse(localStorage.getItem(DB_KEYS.CATEGORIES) || '[]');
+            return userId ? categories.filter(c => c.userId === userId) : categories;
+        }
+        
+        function getBudgets(userId = null) {
+            const budgets = JSON.parse(localStorage.getItem(DB_KEYS.BUDGETS) || '[]');
+            return userId ? budgets.filter(b => b.userId === userId) : budgets;
+        }
+        
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem(DB_KEYS.CURRENT_USER));
+        }
+        
+        function setCurrentUser(user) {
+            localStorage.setItem(DB_KEYS.CURRENT_USER, JSON.stringify(user));
+        }
+        
+        // CRUD Operations
+        function saveMovement(movement) {
+            const movements = getMovements();
+            const index = movements.findIndex(m => m.id === movement.id);
+            if (index >= 0) {
+                movements[index] = movement;
+            } else {
+                movement.id = 'm' + Date.now();
+                movements.push(movement);
+            }
+            localStorage.setItem(DB_KEYS.MOVEMENTS, JSON.stringify(movements));
+        }
+        
+        function deleteMovement(id) {
+            const movements = getMovements().filter(m => m.id !== id);
+            localStorage.setItem(DB_KEYS.MOVEMENTS, JSON.stringify(movements));
+        }
+        
+        function saveCategory(category) {
+            const categories = getCategories();
+            const index = categories.findIndex(c => c.id === category.id);
+            if (index >= 0) {
+                categories[index] = category;
+            } else {
+                category.id = 'c' + Date.now();
+                categories.push(category);
+            }
+            localStorage.setItem(DB_KEYS.CATEGORIES, JSON.stringify(categories));
+        }
+        
+        function deleteCategory(id) {
+            const categories = getCategories().filter(c => c.id !== id);
+            localStorage.setItem(DB_KEYS.CATEGORIES, JSON.stringify(categories));
+        }
+        
+        function saveBudget(budget) {
+            const budgets = getBudgets();
+            const index = budgets.findIndex(b => b.id === budget.id);
+            if (index >= 0) {
+                budgets[index] = budget;
+            } else {
+                budget.id = 'b' + Date.now();
+                budgets.push(budget);
+            }
+            localStorage.setItem(DB_KEYS.BUDGETS, JSON.stringify(budgets));
+        }
+        
+        // ================================
+        // CALCULATION FUNCTIONS
+        // ================================
+        
+        function calculateBalance(userId) {
+            const movements = getMovements(userId);
+            return movements.reduce((acc, m) => {
+                return m.type === 'income' ? acc + m.amount : acc - m.amount;
+            }, 0);
+        }
+        
+        function calculateMonthlyIncome(userId, year, month) {
+            const movements = getMovements(userId);
+            return movements
+                .filter(m => {
+                    const date = new Date(m.date);
+                    return m.type === 'income' && 
+                           date.getFullYear() === year && 
+                           date.getMonth() === month;
+                })
+                .reduce((acc, m) => acc + m.amount, 0);
+        }
+        
+        function calculateMonthlyExpenses(userId, year, month) {
+            const movements = getMovements(userId);
+            return movements
+                .filter(m => {
+                    const date = new Date(m.date);
+                    return m.type === 'expense' && 
+                           date.getFullYear() === year && 
+                           date.getMonth() === month;
+                })
+                .reduce((acc, m) => acc + m.amount, 0);
+        }
+        
+        function getCategoryExpenses(userId, year, month) {
+            const movements = getMovements(userId);
+            const categories = getCategories(userId);
+            const expenses = {};
+            
+            movements
+                .filter(m => {
+                    const date = new Date(m.date);
+                    return m.type === 'expense' && 
+                           date.getFullYear() === year && 
+                           date.getMonth() === month;
+                })
+                .forEach(m => {
+                    if (!expenses[m.categoryId]) {
+                        expenses[m.categoryId] = 0;
+                    }
+                    expenses[m.categoryId] += m.amount;
+                });
+            
+            return Object.entries(expenses).map(([catId, amount]) => {
+                const cat = categories.find(c => c.id === catId);
+                return {
+                    categoryId: catId,
+                    categoryName: cat ? cat.name : 'Sin categoria',
+                    color: cat ? cat.color : '#6b7280',
+                    amount
+                };
+            }).sort((a, b) => b.amount - a.amount);
+        }
+        
+        function getMonthlyData(userId, year, month) {
+            const movements = getMovements(userId);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const data = { income: [], expenses: [] };
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayMovements = movements.filter(m => m.date === dayStr);
+                
+                data.income.push(dayMovements.filter(m => m.type === 'income').reduce((acc, m) => acc + m.amount, 0));
+                data.expenses.push(dayMovements.filter(m => m.type === 'expense').reduce((acc, m) => acc + m.amount, 0));
+            }
+            
+            return data;
+        }
+        
+        function checkOverbudget(userId) {
+            const now = new Date();
+            const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            const budgets = getBudgets(userId);
+            const budget = budgets.find(b => b.month === currentMonth);
+            
+            if (!budget) return false;
+            
+            const expenses = calculateMonthlyExpenses(userId, now.getFullYear(), now.getMonth());
+            return expenses > budget.totalBudget;
+        }
+        
+        // ================================
+        // UI STATE MANAGEMENT
+        // ================================
+        
+        let currentUser = null;
+        let currentPage = 'dashboard';
+        let currentMovementType = 'income';
+        let selectedCategoryColor = '#10b981';
+        let reportPeriod = 'month';
+        
+        // ================================
+        // AUTHENTICATION
+        // ================================
+        
+        function login(username, password, role) {
+            const users = getUsers();
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                if (role !== user.role) {
+                    showToast('Rol incorrecto para este usuario', 'error');
+                    return false;
+                }
+                setCurrentUser(user);
+                currentUser = user;
+                showMainApp();
+                return true;
+            }
+            
+            // Create new user if not exists (for demo purposes)
+            const newUser = {
+                id: 'u' + Date.now(),
+                username,
+                password,
+                role,
+                name: username
+            };
+            users.push(newUser);
+            localStorage.setItem(DB_KEYS.USERS, JSON.stringify(users));
+            setCurrentUser(newUser);
+            currentUser = newUser;
+            showMainApp();
+            return true;
+        }
+        
+        function logout() {
+            localStorage.removeItem(DB_KEYS.CURRENT_USER);
+            currentUser = null;
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+        }
+        
+        function quickLogin(role) {
+            if (role === 'admin') {
+                login('admin', 'admin123', 'admin');
+            } else {
+                login('usuario1', 'pass1', 'user');
+            }
+        }
+        
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            // Update UI with user info
+            const avatar = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('userAvatar').textContent = avatar;
+            document.getElementById('userAvatarMobile').textContent = avatar;
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = currentUser.role === 'admin' ? 'Administrador' : 'Usuario';
+            
+            // Show/hide admin navigation
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminNav').classList.remove('hidden');
+            } else {
+                document.getElementById('adminNav').classList.add('hidden');
+            }
+            
+            // Load initial data
+            navigateTo('dashboard');
+        }
+        
+        // ================================
+        // NAVIGATION
+        // ================================
+        
+        function navigateTo(page) {
+            currentPage = page;
+            
+            // Hide all views
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            
+            // Show selected view
+            const view = document.getElementById(`view-${page}`);
+            if (view) {
+                view.classList.remove('hidden');
+            }
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.nav === page) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Close mobile sidebar
+            closeSidebar();
+            
+            // Load page data
+            loadPageData(page);
+        }
+        
+        function loadPageData(page) {
+            switch (page) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'movements':
+                    loadMovements();
+                    break;
+                case 'categories':
+                    loadCategories();
+                    break;
+                case 'budget':
+                    loadBudget();
+                    break;
+                case 'reports':
+                    loadReports();
+                    break;
+                case 'users':
+                    if (currentUser.role === 'admin') loadUsers();
+                    break;
+                case 'globalReports':
+                    if (currentUser.role === 'admin') loadGlobalReports();
+                    break;
+            }
+        }
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+        
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (window.innerWidth < 1024) {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+        
+        // ================================
+        // DASHBOARD
+        // ================================
+        
+        function loadDashboard() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            
+            const userId = currentUser.role === 'admin' ? null : currentUser.id;
+            const targetUserId = currentUser.role === 'admin' ? getUsers()[0]?.id : currentUser.id;
+            
+            if (!targetUserId) return;
+            
+            // Calculate stats
+            const balance = calculateBalance(targetUserId);
+            const income = calculateMonthlyIncome(targetUserId, year, month);
+            const expenses = calculateMonthlyExpenses(targetUserId, year, month);
+            
+            // Get budget
+            const currentMonth = `${year}-${String(month + 1).padStart(2, '0')}`;
+            const budgets = getBudgets(targetUserId);
+            const budget = budgets.find(b => b.month === currentMonth);
+            const budgetAmount = budget ? budget.totalBudget : 0;
+            const budgetUsed = budgetAmount > 0 ? (expenses / budgetAmount) * 100 : 0;
+            
+            // Update stats
+            document.getElementById('statBalance').textContent = formatCurrency(balance);
+            document.getElementById('statIncome').textContent = formatCurrency(income);
+            document.getElementById('statExpenses').textContent = formatCurrency(expenses);
+            document.getElementById('statBudget').textContent = formatCurrency(budgetAmount);
+            
+            // Budget progress
+            const progressColor = budgetUsed > 100 ? 'from-danger to-warning' : 'from-accent to-warning';
+            document.getElementById('budgetProgress').className = `h-full bg-gradient-to-r ${progressColor} progress-bar`;
+            document.getElementById('budgetProgress').style.width = `${Math.min(budgetUsed, 100)}%`;
+            document.getElementById('budgetPercent').textContent = `${budgetUsed.toFixed(0)}% utilizado`;
+            
+            // Balance change indicator
+            const balanceChange = document.getElementById('balanceChange');
+            if (balance >= 0) {
+                balanceChange.textContent = `+${formatCurrency(balance)} total`;
+                balanceChange.className = 'text-sm text-accent mt-2';
+            } else {
+                balanceChange.textContent = `${formatCurrency(balance)} total`;
+                balanceChange.className = 'text-sm text-danger mt-2';
+            }
+            
+            // Load charts
+            loadMonthlyChart(targetUserId, year, month);
+            loadCategoryChart(targetUserId, year, month);
+            loadRecentTransactions(targetUserId);
+        }
+        
+        function loadMonthlyChart(userId, year, month) {
+            const data = getMonthlyData(userId, year, month);
+            const container = document.getElementById('monthlyChart');
+            const maxValue = Math.max(...data.income, ...data.expenses, 1);
+            
+            container.innerHTML = '';
+            
+            // Show last 10 days for better visualization
+            const lastDays = 10;
+            const startIndex = Math.max(0, data.income.length - lastDays);
+            
+            for (let i = startIndex; i < data.income.length; i++) {
+                const incomeHeight = (data.income[i] / maxValue) * 100;
+                const expenseHeight = (data.expenses[i] / maxValue) * 100;
+                
+                const dayGroup = document.createElement('div');
+                dayGroup.className = 'flex-1 flex flex-col items-center gap-1';
+                dayGroup.innerHTML = `
+                    <div class="flex gap-1 items-end h-36 w-full justify-center">
+                        <div class="w-3 bg-accent rounded-t chart-bar hover:opacity-80 cursor-pointer" 
+                             style="height: ${incomeHeight}%"
+                             title="Ingresos: ${formatCurrency(data.income[i])}"></div>
+                        <div class="w-3 bg-danger rounded-t chart-bar hover:opacity-80 cursor-pointer"
+                             style="height: ${expenseHeight}%"
+                             title="Gastos: ${formatCurrency(data.expenses[i])}"></div>
+                    </div>
+                    <span class="text-xs text-muted">${i + 1}</span>
+                `;
+                container.appendChild(dayGroup);
+            }
+        }
+        
+        function loadCategoryChart(userId, year, month) {
+            const data = getCategoryExpenses(userId, year, month);
+            const container = document.getElementById('categoryChart');
+            const total = data.reduce((acc, c) => acc + c.amount, 0) || 1;
+            
+            if (data.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-8">No hay gastos este mes</p>';
+                return;
+            }
+            
+            container.innerHTML = data.slice(0, 5).map(cat => {
+                const percent = (cat.amount / total) * 100;
+                return `
+                    <div class="flex items-center gap-3">
+                        <div class="w-3 h-3 rounded-full" style="background: ${cat.color}"></div>
+                        <span class="flex-1 text-sm text-fg">${cat.categoryName}</span>
+                        <span class="text-sm text-muted">${percent.toFixed(0)}%</span>
+                        <span class="text-sm font-medium text-fg w-24 text-right">${formatCurrency(cat.amount)}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function loadRecentTransactions(userId) {
+            const movements = getMovements(userId)
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+            
+            const container = document.getElementById('recentTransactions');
+            const categories = getCategories(userId);
+            
+            if (movements.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-8">No hay movimientos recientes</p>';
+                return;
+            }
+            
+            container.innerHTML = movements.map(m => {
+                const cat = categories.find(c => c.id === m.categoryId);
+                const isIncome = m.type === 'income';
+                return `
+                    <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-card/50 transition-colors">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" 
+                             style="background: ${cat ? cat.color + '20' : '#6b728020'}">
+                            ${isIncome 
+                                ? '<svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>'
+                                : '<svg class="w-5 h-5 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>'
+                            }
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-fg truncate">${m.description}</p>
+                            <p class="text-sm text-muted">${cat ? cat.name : 'Sin categoria'} - ${formatDate(m.date)}</p>
+                        </div>
+                        <p class="font-semibold ${isIncome ? 'text-accent' : 'text-danger'}">
+                            ${isIncome ? '+' : '-'}${formatCurrency(m.amount)}
+                        </p>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // ================================
+        // MOVEMENTS
+        // ================================
+        
+        function loadMovements() {
+            filterMovements();
+        }
+        
+        function filterMovements() {
+            const userId = currentUser.role === 'admin' ? null : currentUser.id;
+            let movements = getMovements(userId);
+            const categories = getCategories(userId);
+            
+            // Apply filters
+            const typeFilter = document.getElementById('filterType').value;
+            const catFilter = document.getElementById('filterCategory').value;
+            const dateFrom = document.getElementById('filterDateFrom').value;
+            const dateTo = document.getElementById('filterDateTo').value;
+            
+            if (typeFilter !== 'all') {
+                movements = movements.filter(m => m.type === typeFilter);
+            }
+            if (catFilter.trim() !== '') {
+                // Filtrar por nombre de categoría
+                movements = movements.filter(m => {
+                    const category = categories.find(c => c.id === m.categoryId);
+                    return category && category.name.toLowerCase().includes(catFilter.toLowerCase());
+                });
+            }
+            if (dateFrom) {
+                movements = movements.filter(m => m.date >= dateFrom);
+            }
+            if (dateTo) {
+                movements = movements.filter(m => m.date <= dateTo);
+            }
+            
+            // Sort by date descending
+            movements.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Render table
+            const tbody = document.getElementById('movementsTable');
+            const noMovements = document.getElementById('noMovements');
+            
+            if (movements.length === 0) {
+                tbody.innerHTML = '';
+                noMovements.classList.remove('hidden');
+                return;
+            }
+            
+            noMovements.classList.add('hidden');
+            
+            tbody.innerHTML = movements.map(m => {
+                const cat = categories.find(c => c.id === m.categoryId);
+                const isIncome = m.type === 'income';
+                return `
+                    <tr class="border-b border-border table-row-hover transition-colors">
+                        <td class="p-4 text-sm text-fg">${formatDate(m.date)}</td>
+                        <td class="p-4 text-sm text-fg">${m.description}</td>
+                        <td class="p-4">
+                            <span class="inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs" style="background: ${cat ? cat.color + '20' : '#6b728020'}">
+                                <span class="w-2 h-2 rounded-full" style="background: ${cat ? cat.color : '#6b7280'}"></span>
+                                ${cat ? cat.name : 'Sin categoria'}
+                            </span>
+                        </td>
+                        <td class="p-4">
+                            <span class="px-2 py-1 rounded-lg text-xs ${isIncome ? 'bg-accent/20 text-accent' : 'bg-danger/20 text-danger'}">
+                                ${isIncome ? 'Ingreso' : 'Gasto'}
+                            </span>
+                        </td>
+                        <td class="p-4 text-right font-semibold ${isIncome ? 'text-accent' : 'text-danger'}">
+                            ${isIncome ? '+' : '-'}${formatCurrency(m.amount)}
+                        </td>
+                        <td class="p-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <button onclick="editMovement('${m.id}')" class="p-2 hover:bg-card rounded-lg transition-colors" title="Editar">
+                                    <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                                <button onclick="confirmDeleteMovement('${m.id}')" class="p-2 hover:bg-danger/20 rounded-lg transition-colors" title="Eliminar">
+                                    <svg class="w-4 h-4 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function openMovementModal(movement = null) {
+            const modal = document.getElementById('movementModal');
+            const title = document.getElementById('movementModalTitle');
+            
+            if (movement) {
+                const categories = getCategories(currentUser.id);
+                const category = categories.find(c => c.id === movement.categoryId);
+                
+                title.textContent = 'Editar Movimiento';
+                document.getElementById('movementId').value = movement.id;
+                document.getElementById('movementDescription').value = movement.description;
+                document.getElementById('movementAmount').value = movement.amount;
+                document.getElementById('movementCategory').value = category ? category.name : movement.categoryId;
+                document.getElementById('movementDate').value = movement.date;
+                setMovementType(movement.type);
+            } else {
+                title.textContent = 'Nuevo Movimiento';
+                document.getElementById('movementForm').reset();
+                document.getElementById('movementId').value = '';
+                document.getElementById('movementDate').value = new Date().toISOString().split('T')[0];
+                setMovementType('income');
+            }
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function closeMovementModal() {
+            document.getElementById('movementModal').classList.add('hidden');
+        }
+        
+        function setMovementType(type) {
+            currentMovementType = type;
+            const btnIncome = document.getElementById('btnIncome');
+            const btnExpense = document.getElementById('btnExpense');
+            
+            if (type === 'income') {
+                btnIncome.className = 'py-3 rounded-xl border-2 border-accent bg-accent/20 text-accent';
+                btnExpense.className = 'py-3 rounded-xl border border-border bg-surface text-muted transition-all hover:border-danger';
+            } else {
+                btnIncome.className = 'py-3 rounded-xl border border-border bg-surface text-muted transition-all hover:border-accent';
+                btnExpense.className = 'py-3 rounded-xl border-2 border-danger bg-danger/20 text-danger';
+            }
+        }
+        
+        function editMovement(id) {
+            const movements = getMovements(currentUser.id);
+            const movement = movements.find(m => m.id === id);
+            if (movement) {
+                openMovementModal(movement);
+            }
+        }
+        
+        function confirmDeleteMovement(id) {
+            if (confirm('¿Estas seguro de eliminar este movimiento?')) {
+                deleteMovement(id);
+                filterMovements();
+                showToast('Movimiento eliminado correctamente');
+            }
+        }
+        
+        // ================================
+        // CATEGORIES
+        // ================================
+        
+        function loadCategories() {
+            const categories = getCategories(currentUser.id);
+            const container = document.getElementById('categoriesGrid');
+            
+            if (categories.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-8 col-span-2">No hay categorias creadas</p>';
+                return;
+            }
+            
+            container.innerHTML = categories.map(c => `
+                <div class="glass rounded-2xl p-5 flex items-center gap-4 animate-fade-in">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: ${c.color}20">
+                        <div class="w-6 h-6 rounded-full" style="background: ${c.color}"></div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium text-fg truncate">${c.name}</p>
+                        <p class="text-sm text-muted">${c.type === 'income' ? 'Ingreso' : c.type === 'expense' ? 'Gasto' : 'Ambos'}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editCategory('${c.id}')" class="p-2 hover:bg-card rounded-lg transition-colors">
+                            <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                        </button>
+                        <button onclick="confirmDeleteCategory('${c.id}')" class="p-2 hover:bg-danger/20 rounded-lg transition-colors">
+                            <svg class="w-4 h-4 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function openCategoryModal(category = null) {
+            const modal = document.getElementById('categoryModal');
+            const title = document.getElementById('categoryModalTitle');
+            
+            if (category) {
+                title.textContent = 'Editar Categoria';
+                document.getElementById('categoryId').value = category.id;
+                document.getElementById('categoryName').value = category.name;
+                document.getElementById('categoryType').value = category.type;
+                selectColor(category.color);
+            } else {
+                title.textContent = 'Nueva Categoria';
+                document.getElementById('categoryForm').reset();
+                document.getElementById('categoryId').value = '';
+                selectColor('#10b981');
+            }
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.add('hidden');
+        }
+        
+        function selectColor(color) {
+            selectedCategoryColor = color;
+            document.getElementById('categoryColor').value = color;
+            
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                if (btn.dataset.color === color) {
+                    btn.classList.add('border-white', 'scale-110');
+                } else {
+                    btn.classList.remove('border-white', 'scale-110');
+                }
+            });
+        }
+        
+        function editCategory(id) {
+            const categories = getCategories(currentUser.id);
+            const category = categories.find(c => c.id === id);
+            if (category) {
+                openCategoryModal(category);
+            }
+        }
+        
+        function confirmDeleteCategory(id) {
+            if (confirm('¿Estas seguro de eliminar esta categoria?')) {
+                deleteCategory(id);
+                loadCategories();
+                showToast('Categoria eliminada correctamente');
+            }
+        }
+        
+        // ================================
+        // BUDGET
+        // ================================
+        
+        function loadBudget() {
+            const now = new Date();
+            const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            
+            // Set current month in input
+            document.getElementById('budgetMonth').value = currentMonth;
+            
+            // Get current budget
+            const budgets = getBudgets(currentUser.id);
+            const budget = budgets.find(b => b.month === currentMonth);
+            
+            if (budget) {
+                document.getElementById('totalBudget').value = budget.totalBudget;
+            }
+            
+            updateBudgetStatus();
+        }
+        
+        function saveBudget() {
+            const total = parseFloat(document.getElementById('totalBudget').value) || 0;
+            const month = document.getElementById('budgetMonth').value;
+            
+            if (!month) {
+                showToast('Selecciona un mes', 'error');
+                return;
+            }
+            
+            const budgets = getBudgets(currentUser.id);
+            const existing = budgets.find(b => b.month === month);
+            
+            const budget = {
+                id: existing ? existing.id : null,
+                userId: currentUser.id,
+                month,
+                totalBudget: total
+            };
+            
+            saveBudget(budget);
+            showToast('Presupuesto guardado correctamente');
+            updateBudgetStatus();
+        }
+        
+        function updateBudgetStatus() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const currentMonth = `${year}-${String(month + 1).padStart(2, '0')}`;
+            
+            const budgets = getBudgets(currentUser.id);
+            const budget = budgets.find(b => b.month === currentMonth);
+            const container = document.getElementById('budgetStatus');
+            
+            if (!budget || budget.totalBudget === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-8">No hay presupuesto configurado para este mes</p>';
+                return;
+            }
+            
+            const expenses = getCategoryExpenses(currentUser.id, year, month);
+            const totalExpenses = expenses.reduce((acc, e) => acc + e.amount, 0);
+            const remaining = budget.totalBudget - totalExpenses;
+            const percentUsed = (totalExpenses / budget.totalBudget) * 100;
+            
+            container.innerHTML = `
+                <div class="mb-6">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-muted">Presupuesto Total</span>
+                        <span class="font-semibold text-fg">${formatCurrency(budget.totalBudget)}</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-muted">Gastado</span>
+                        <span class="font-semibold text-danger">${formatCurrency(totalExpenses)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-muted">Disponible</span>
+                        <span class="font-semibold ${remaining >= 0 ? 'text-accent' : 'text-danger'}">${formatCurrency(remaining)}</span>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="h-4 bg-surface rounded-full overflow-hidden">
+                        <div class="h-full progress-bar ${percentUsed > 100 ? 'bg-danger' : percentUsed > 80 ? 'bg-warning' : 'bg-accent'}" style="width: ${Math.min(percentUsed, 100)}%"></div>
+                    </div>
+                    <p class="text-sm text-muted mt-2">${percentUsed.toFixed(1)}% utilizado</p>
+                </div>
+                
+                ${percentUsed > 100 ? `
+                    <div class="p-4 bg-danger/20 border border-danger/30 rounded-xl">
+                        <p class="text-danger font-medium">Has excedido tu presupuesto!</p>
+                        <p class="text-sm text-muted mt-1">Te has pasado por ${formatCurrency(Math.abs(remaining))}</p>
+                    </div>
+                ` : percentUsed > 80 ? `
+                    <div class="p-4 bg-warning/20 border border-warning/30 rounded-xl">
+                        <p class="text-warning font-medium">Cuidado!</p>
+                        <p class="text-sm text-muted mt-1">Solo te queda ${formatCurrency(remaining)} de presupuesto</p>
+                    </div>
+                ` : `
+                    <div class="p-4 bg-accent/20 border border-accent/30 rounded-xl">
+                        <p class="text-accent font-medium">Vas bien!</p>
+                        <p class="text-sm text-muted mt-1">Te queda ${formatCurrency(remaining)} de presupuesto</p>
+                    </div>
+                `}
+            `;
+        }
+        
+        // ================================
+        // REPORTS
+        // ================================
+        
+        function loadReports() {
+            const now = new Date();
+            let startDate, endDate;
+            
+            switch (reportPeriod) {
+                case 'week':
+                    startDate = new Date(now);
+                    startDate.setDate(now.getDate() - 7);
+                    endDate = now;
+                    break;
+                case 'month':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                    break;
+                case 'year':
+                    startDate = new Date(now.getFullYear(), 0, 1);
+                    endDate = new Date(now.getFullYear(), 11, 31);
+                    break;
+            }
+            
+            const movements = getMovements(currentUser.id).filter(m => {
+                const date = new Date(m.date);
+                return date >= startDate && date <= endDate;
+            });
+            
+            const totalIncome = movements.filter(m => m.type === 'income').reduce((acc, m) => acc + m.amount, 0);
+            const totalExpenses = movements.filter(m => m.type === 'expense').reduce((acc, m) => acc + m.amount, 0);
+            const balance = totalIncome - totalExpenses;
+            
+            document.getElementById('reportIncome').textContent = formatCurrency(totalIncome);
+            document.getElementById('reportExpenses').textContent = formatCurrency(totalExpenses);
+            document.getElementById('reportBalance').textContent = formatCurrency(balance);
+            
+            // Category breakdown
+            const categories = getCategories(currentUser.id);
+            const expensesByCategory = {};
+            
+            movements.filter(m => m.type === 'expense').forEach(m => {
+                if (!expensesByCategory[m.categoryId]) {
+                    expensesByCategory[m.categoryId] = 0;
+                }
+                expensesByCategory[m.categoryId] += m.amount;
+            });
+            
+            const breakdown = Object.entries(expensesByCategory)
+                .map(([catId, amount]) => {
+                    const cat = categories.find(c => c.id === catId);
+                    return {
+                        name: cat ? cat.name : 'Sin categoria',
+                        color: cat ? cat.color : '#6b7280',
+                        amount,
+                        percent: totalExpenses > 0 ? (amount / totalExpenses) * 100 : 0
+                    };
+                })
+                .sort((a, b) => b.amount - a.amount);
+            
+            const container = document.getElementById('reportBreakdown');
+            
+            if (breakdown.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-8">No hay datos para mostrar</p>';
+                return;
+            }
+            
+            container.innerHTML = breakdown.map(item => `
+                <div class="flex items-center gap-4">
+                    <div class="w-3 h-3 rounded-full" style="background: ${item.color}"></div>
+                    <span class="flex-1 text-fg">${item.name}</span>
+                    <span class="text-muted">${item.percent.toFixed(1)}%</span>
+                    <span class="font-semibold text-fg w-28 text-right">${formatCurrency(item.amount)}</span>
+                </div>
+            `).join('');
+        }
+        
+        function setReportPeriod(period) {
+            reportPeriod = period;
+            
+            document.querySelectorAll('.report-period-btn').forEach(btn => {
+                if (btn.dataset.period === period) {
+                    btn.className = 'report-period-btn active px-4 py-2 rounded-lg bg-accent text-white';
+                } else {
+                    btn.className = 'report-period-btn px-4 py-2 rounded-lg bg-surface text-muted hover:text-fg transition-colors';
+                }
+            });
+            
+            loadReports();
+        }
+        
+        // ================================
+        // ADMIN: USERS
+        // ================================
+        
+        function loadUsers() {
+            const users = getUsers().filter(u => u.role !== 'admin');
+            const tbody = document.getElementById('usersTable');
+            
+            tbody.innerHTML = users.map(user => {
+                const balance = calculateBalance(user.id);
+                const movements = getMovements(user.id).length;
+                const isOverbudget = checkOverbudget(user.id);
+                
+                return `
+                    <tr class="border-b border-border table-row-hover transition-colors">
+                        <td class="p-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold">
+                                    ${user.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <p class="font-medium text-fg">${user.name}</p>
+                                    <p class="text-sm text-muted">@${user.username}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4">
+                            <span class="px-2 py-1 rounded-lg text-xs bg-card text-muted">${user.role === 'admin' ? 'Admin' : 'Usuario'}</span>
+                        </td>
+                        <td class="p-4 text-right font-semibold ${balance >= 0 ? 'text-accent' : 'text-danger'}">${formatCurrency(balance)}</td>
+                        <td class="p-4 text-right text-fg">${movements}</td>
+                        <td class="p-4 text-center">
+                            ${isOverbudget 
+                                ? '<span class="px-2 py-1 rounded-lg text-xs bg-danger/20 text-danger">Sobrepresupuesto</span>'
+                                : '<span class="px-2 py-1 rounded-lg text-xs bg-accent/20 text-accent">Normal</span>'
+                            }
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // ================================
+        // ADMIN: GLOBAL REPORTS
+        // ================================
+        
+        function loadGlobalReports() {
+            const users = getUsers().filter(u => u.role !== 'admin');
+            const allMovements = getMovements();
+            
+            // Global stats
+            document.getElementById('globalUsers').textContent = users.length;
+            document.getElementById('globalTransactions').textContent = allMovements.length;
+            
+            const totalIncome = allMovements.filter(m => m.type === 'income').reduce((acc, m) => acc + m.amount, 0);
+            const totalExpenses = allMovements.filter(m => m.type === 'expense').reduce((acc, m) => acc + m.amount, 0);
+            
+            document.getElementById('globalIncome').textContent = formatCurrency(totalIncome);
+            document.getElementById('globalExpenses').textContent = formatCurrency(totalExpenses);
+            
+            // Overbudget users
+            const overbudgetContainer = document.getElementById('overbudgetUsers');
+            const overbudgetUsers = users.filter(u => checkOverbudget(u.id));
+            
+            if (overbudgetUsers.length === 0) {
+                overbudgetContainer.innerHTML = '<p class="text-muted text-center py-4">No hay usuarios con sobrepresupuesto</p>';
+            } else {
+                overbudgetContainer.innerHTML = overbudgetUsers.map(user => {
+                    const expenses = calculateMonthlyExpenses(user.id, new Date().getFullYear(), new Date().getMonth());
+                    const budgets = getBudgets(user.id);
+                    const budget = budgets.find(b => b.month === `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`);
+                    const exceeded = budget ? expenses - budget.totalBudget : 0;
+                    
+                    return `
+                        <div class="flex items-center gap-4 p-3 bg-danger/10 rounded-xl">
+                            <div class="w-10 h-10 rounded-full bg-danger/20 flex items-center justify-center text-danger font-semibold">
+                                ${user.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-fg">${user.name}</p>
+                                <p class="text-sm text-muted">Excedido por ${formatCurrency(exceeded)}</p>
+                            </div>
+                            <span class="text-danger font-semibold">${formatCurrency(expenses)}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // Top categories
+            const allCategories = JSON.parse(localStorage.getItem(DB_KEYS.CATEGORIES) || '[]');
+            const expensesByCategory = {};
+            
+            allMovements.filter(m => m.type === 'expense').forEach(m => {
+                if (!expensesByCategory[m.categoryId]) {
+                    expensesByCategory[m.categoryId] = 0;
+                }
+                expensesByCategory[m.categoryId] += m.amount;
+            });
+            
+            const topCategories = Object.entries(expensesByCategory)
+                .map(([catId, amount]) => {
+                    const cat = allCategories.find(c => c.id === catId);
+                    return {
+                        name: cat ? cat.name : 'Sin categoria',
+                        color: cat ? cat.color : '#6b7280',
+                        amount
+                    };
+                })
+                .sort((a, b) => b.amount - a.amount)
+                .slice(0, 5);
+            
+            const topContainer = document.getElementById('topCategories');
+            
+            if (topCategories.length === 0) {
+                topContainer.innerHTML = '<p class="text-muted text-center py-4">No hay datos de gastos</p>';
+            } else {
+                topContainer.innerHTML = topCategories.map(cat => `
+                    <div class="flex items-center gap-4">
+                        <div class="w-3 h-3 rounded-full" style="background: ${cat.color}"></div>
+                        <span class="flex-1 text-fg">${cat.name}</span>
+                        <span class="font-semibold text-fg">${formatCurrency(cat.amount)}</span>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // ================================
+        // UTILITY FUNCTIONS
+        // ================================
+        
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN',
+                minimumFractionDigits: 2
+            }).format(amount);
+        }
+        
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('es-MX', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+        }
+        
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+            
+            msg.textContent = message;
+            
+            if (type === 'error') {
+                icon.className = 'w-6 h-6 rounded-full bg-danger flex items-center justify-center';
+                icon.innerHTML = '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
+            } else {
+                icon.className = 'w-6 h-6 rounded-full bg-accent flex items-center justify-center';
+                icon.innerHTML = '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
+            }
+            
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+        
+        // ================================
+        // FORM HANDLERS
+        // ================================
+        
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const role = document.getElementById('loginRole').value;
+            login(username, password, role);
+        });
+        
+        document.getElementById('movementForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const categoryName = document.getElementById('movementCategory').value.trim();
+            const categories = getCategories(currentUser.id);
+            
+            // Buscar o crear categoría
+            let categoryId;
+            let existingCategory = categories.find(c => c.name.toLowerCase() === categoryName.toLowerCase());
+            
+            if (existingCategory) {
+                categoryId = existingCategory.id;
+            } else {
+                // Crear nueva categoría automáticamente
+                const defaultColors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899'];
+                const newCategoryId = 'c' + Date.now();
+                const newCategory = {
+                    id: newCategoryId,
+                    userId: currentUser.id,
+                    name: categoryName,
+                    type: currentMovementType,
+                    color: defaultColors[Math.floor(Math.random() * defaultColors.length)]
+                };
+                saveCategory(newCategory);
+                categoryId = newCategoryId;
+            }
+            
+            const movement = {
+                id: document.getElementById('movementId').value || null,
+                userId: currentUser.id,
+                type: currentMovementType,
+                description: document.getElementById('movementDescription').value,
+                amount: parseFloat(document.getElementById('movementAmount').value),
+                categoryId: categoryId,
+                date: document.getElementById('movementDate').value
+            };
+            
+            saveMovement(movement);
+            closeMovementModal();
+            filterMovements();
+            showToast('Movimiento guardado correctamente');
+        });
+        
+        document.getElementById('categoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const category = {
+                id: document.getElementById('categoryId').value || null,
+                userId: currentUser.id,
+                name: document.getElementById('categoryName').value,
+                type: document.getElementById('categoryType').value,
+                color: document.getElementById('categoryColor').value
+            };
+            
+            saveCategory(category);
+            closeCategoryModal();
+            loadCategories();
+            showToast('Categoria guardada correctamente');
+        });
+        
+        // ================================
+        // INITIALIZATION
+        // ================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDatabase();
+            
+            // Check for existing session
+            const savedUser = getCurrentUser();
+            if (savedUser) {
+                currentUser = savedUser;
+                showMainApp();
+            }
+            
+            // Handle window resize for sidebar
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 1024) {
+                    document.getElementById('sidebar').classList.remove('-translate-x-full');
+                    document.getElementById('sidebarOverlay').classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
