@@ -593,7 +593,7 @@
                                     class="w-full px-4 py-3 bg-surface border border-border rounded-xl text-fg focus-ring">
                             </div>
                             <div class="flex items-end">
-                                <button onclick="saveBudget()" class="w-full py-3 px-6 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:opacity-90 focus-ring btn-press">
+                                <button onclick="saveBudgetFromForm()" class="w-full py-3 px-6 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:opacity-90 focus-ring btn-press">
                                     Guardar
                                 </button>
                             </div>
@@ -1689,7 +1689,7 @@
             updateBudgetStatus();
         }
         
-        function saveBudget() {
+        function saveBudgetFromForm() {
             const total = parseFloat(document.getElementById('totalBudget').value) || 0;
             const month = document.getElementById('budgetMonth').value;
             
